@@ -1,11 +1,30 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'setup-aya'
+description: 'Set up Aya in your GitHub Actions workflow'
+author: 'https://github.com/aya-prover'
 inputs:
-  milliseconds: # change this
-    required: true
-    description: 'input description here'
-    default: 'default value if applicable'
-runs:
+  version:
+    required: false
+    default: 'nightly-build'
+    description: |
+      The Aya version you want to use. This can be a tag name, or a specific commit hash.
+      The default version is nightly-build.
+      Example values: v0.19, v0.1, nightly-build, or any commit hash.
+
+  distribution:
+    required : false
+    default: 'jlink'
+    description: |
+      Which Aya distribution you want to use. The default distribution is jlink.
+      It is not recommended to change this value, because "compile-once, run-everywhere".
+      Supported distributions: jlink, native
+
+  build-from-source:
+    required : false
+    default: 'false'
+    description: |
+      Whether to build Aya from source. This is not recommended, as it may take a long time.
+      This can be used together with the {{ version }} parameter.
+
+runs :
   using: 'node16'
   main: 'dist/index.js'
