@@ -2,9 +2,14 @@
 
 ## Use this Action
 
-// TODO
+The following code snippet installs the nightly version of Aya and adds it to the PATH:
 
-### Develop this Action
+```yaml
+- name: Setup Aya
+  uses: aya-prover/setup-aya@latest
+```
+
+## Develop this Action
 
 - Install a modern version of Node.js
 - Install `pnpm`: `npm install -g pnpm`
