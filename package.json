@@ -1,0 +1,40 @@
+{
+  "name": "setup-aya",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Set up Aya in your GitHub Actions workflow.",
+  "main": "lib/main.js",
+  "packageManager": "pnpm@7.16.1",
+  "scripts": {
+    "build": "tsc",
+    "package": "tsc && ncc build --source-map --license licenses.txt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aya-prover/setup-aya.git"
+  },
+  "keywords": [
+    "actions",
+    "setup",
+    "aya",
+    "aya-prover"
+  ],
+  "author": "Aya Prover",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.10.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.9",
+    "@typescript-eslint/parser": "^4.33.0",
+    "@vercel/ncc": "^0.31.1",
+    "eslint": "^7.32.0",
+    "eslint-plugin-github": "^4.4.1",
+    "eslint-plugin-jest": "^25.7.0",
+    "jest": "^27.5.1",
+    "js-yaml": "^4.1.0",
+    "prettier": "2.5.1",
+    "ts-jest": "^27.1.5",
+    "typescript": "^4.9.3"
+  }
+}
