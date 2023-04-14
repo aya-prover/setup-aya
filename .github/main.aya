@@ -2,7 +2,7 @@ open data Nat
   | zero
   | suc Nat
 
-def overlap infixl + (a b : Nat) : Nat
+overlap def infixl + (a b : Nat) : Nat
   | 0, a => a
   | a, 0 => a
   | suc a, b => suc (a + b)
