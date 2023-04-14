@@ -7,6 +7,8 @@ The following code snippet installs the nightly version of Aya and adds it to th
 ```yaml
 - name: Setup Aya
   uses: aya-prover/setup-aya@latest
+  with:
+    version: 'nightly-build'
 ```
 
 ## Develop this Action

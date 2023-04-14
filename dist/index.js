@@ -41,6 +41,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(7535));
 const tool = __importStar(__nccwpck_require__(1660));
+const exec = __importStar(__nccwpck_require__(1062));
 const os = __importStar(__nccwpck_require__(2087));
 const path = __importStar(__nccwpck_require__(5622));
 var Distribution;
@@ -72,8 +73,9 @@ function run() {
                 core.setFailed("Sorry, I can't build from source yet.");
             if (distribution === Distribution.Native)
                 core.setFailed("Sorry, I can't install native distribution yet.");
-            yield installAya(version, distribution);
-            core.info("Nice to meet you!");
+            const ayaHome = yield installAya(version, distribution);
+            core.info("Nice to meet you!, This is");
+            yield exec.exec(path.join(ayaHome, "bin", "aya"), ["--version"]);
         }
         catch (error) {
             if (error instanceof Error)
@@ -85,15 +87,15 @@ function installAya(version, distribution) {
     return __awaiter(this, void 0, void 0, function* () {
         const os = detectOS();
         const arch = detectArch();
-        core.info(`Installing Aya ${version} for ${os} ${arch} from ${distribution}`);
+        core.info(`Installing Aya ${version} for ${os}-${arch} from ${distribution}`);
         const exe = detectExe();
         let url;
         switch (distribution) {
             case Distribution.JLink:
-                url = `https://github.com/aya-prover/aya-dev/releases/download/${version}/aya-prover-jlink-${os}_${arch}.zip`;
+                url = `https://github.com/aya-prover/aya-dev/releases/download/${version}/aya-prover_jlink_${os}-${arch}.zip`;
                 break;
             case Distribution.Native:
-                url = `https://github.com/aya-prover/aya-dev/releases/download/${version}/aya-native-${os}_${arch}${exe}`;
+                url = `https://github.com/aya-prover/aya-dev/releases/download/${version}/aya-prover_native_${os}-${arch}${exe}`;
                 break;
         }
         core.info("Downloading from " + url);
@@ -102,17 +104,18 @@ function installAya(version, distribution) {
         // TODO: native distribution
         const ayaHome = yield tool.extractZip(file);
         core.addPath(path.join(ayaHome, "bin"));
+        return ayaHome;
     });
 }
 /** convert current OS to GitHub runner names */
 function detectOS() {
     var osType = os.type().toLowerCase();
     if (osType.includes("linux"))
-        return "ubuntu-latest";
+        return "linux";
     if (osType.includes("darwin"))
-        return "macos-latest";
+        return "macos";
     if (osType.includes("windows"))
-        return "windows-latest";
+        return "windows";
     throw new Error("Unknown OS: " + osType);
 }
 function detectExe() {
@@ -120,7 +123,7 @@ function detectExe() {
 }
 /** currently GitHub only supports x86-64 runners */
 function detectArch() {
-    return "x86-64";
+    return "x64";
 }
 run();
 

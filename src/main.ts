@@ -1,5 +1,6 @@
 import * as core from "@actions/core";
 import * as tool from "@actions/tool-cache";
+import * as exec from "@actions/exec";
 import * as os from "os";
 import * as path from "path";
 
@@ -33,26 +34,28 @@ async function run(): Promise<void> {
     if (buildFromSource) core.setFailed("Sorry, I can't build from source yet.");
     if (distribution === Distribution.Native) core.setFailed("Sorry, I can't install native distribution yet.");
 
-    await installAya(version, distribution);
-    core.info("Nice to meet you!");
+    const ayaHome = await installAya(version, distribution);
+    core.info("Nice to meet you!, This is");
+    await exec.exec(path.join(ayaHome, "bin", "aya"), ["--version"]);
+    
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message);
   }
 }
 
-async function installAya(version: string, distribution: Distribution) {
+async function installAya(version: string, distribution: Distribution): Promise<string> {
   const os = detectOS();
   const arch = detectArch();
-  core.info(`Installing Aya ${version} for ${os} ${arch} from ${distribution}`);
+  core.info(`Installing Aya ${version} for ${os}-${arch} from ${distribution}`);
 
   const exe = detectExe();
   let url: string;
   switch (distribution) {
     case Distribution.JLink:
-      url = `https://github.com/aya-prover/aya-dev/releases/download/${version}/aya-prover-jlink-${os}_${arch}.zip`;
+      url = `https://github.com/aya-prover/aya-dev/releases/download/${version}/aya-prover_jlink_${os}-${arch}.zip`;
       break;
     case Distribution.Native:
-      url = `https://github.com/aya-prover/aya-dev/releases/download/${version}/aya-native-${os}_${arch}${exe}`;
+      url = `https://github.com/aya-prover/aya-dev/releases/download/${version}/aya-prover_native_${os}-${arch}${exe}`;
       break;
   }
 
@@ -63,14 +66,15 @@ async function installAya(version: string, distribution: Distribution) {
   // TODO: native distribution
   const ayaHome = await tool.extractZip(file);
   core.addPath(path.join(ayaHome, "bin"));
+  return ayaHome;
 }
 
 /** convert current OS to GitHub runner names */
 function detectOS(): string {
   var osType: string = os.type().toLowerCase();
-  if (osType.includes("linux")) return "ubuntu-latest";
-  if (osType.includes("darwin")) return "macos-latest";
-  if (osType.includes("windows")) return "windows-latest";
+  if (osType.includes("linux")) return "linux";
+  if (osType.includes("darwin")) return "macos";
+  if (osType.includes("windows")) return "windows";
   throw new Error("Unknown OS: " + osType);
 }
 
@@ -80,7 +84,7 @@ function detectExe(): string {
 
 /** currently GitHub only supports x86-64 runners */
 function detectArch(): string {
-  return "x86-64";
+  return "x64";
 }
 
 run()
